@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,17 +17,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.prodemy.springmp.dto.UserDto;
 import com.prodemy.springmp.dto.ProductDto;
 import com.prodemy.springmp.model.Category;
 import com.prodemy.springmp.model.Product;
+import com.prodemy.springmp.model.User;
 import com.prodemy.springmp.service.CategoryServiceImpl;
 import com.prodemy.springmp.service.ProductServiceImpl;
+import com.prodemy.springmp.service.UserServiceImpl;
 
 @Controller
 public class AdminController {
 	
     public static String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/productImages";
     
+    @Autowired
+    UserServiceImpl userService;
     @Autowired
     CategoryServiceImpl categoryService;
     @Autowired
@@ -38,9 +44,52 @@ public class AdminController {
         return "adminHome";
     }
     
+    // Show admin users
+    @GetMapping("/admin/users")
+    public String getUsers(Model model){
+    	List<UserDto> users = userService.findAllUsers();
+        model.addAttribute("users", users);
+        return "users";
+    }
+    
+    // Show admin add new users
+    @GetMapping("/admin/users/add")
+    public String getUserAdd(Model model){
+    	model.addAttribute("userDto", new UserDto());
+        return "usersAdd";
+    }
+    
+    // Add new users
+    @PostMapping("/admin/users/add")
+    public String postUserAdd(@ModelAttribute("user") UserDto userDto){
+        userService.saveUser(userDto);
+        return "redirect:/admin/users";
+    }
+    
+    // Remove users
+    @GetMapping("/admin/users/delete/{id}")
+    public String deleteUser(@PathVariable Long id){
+        userService.deleteUserById(id);
+        return "/redirect:/admin/users";
+    }
+    
+    @GetMapping("/admin/users/update/{id}")
+    public String updateUser(@PathVariable Long id, Model model){
+//        User user = userService.getUserById(id);
+//        model.addAttribute("user", user);
+//        return "usersUpdate";
+        Optional<User> user = userService.getUserById(id);
+        if(user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "usersUpdate";
+        } else {
+            return "404";
+        }
+    }
+    
     // Show admin categories
     @GetMapping("/admin/categories")
-    public String getCat(Model model){
+    public String getCats(Model model){
         model.addAttribute("categories",categoryService.getAllCategories());
         return "categories";
     }
@@ -87,8 +136,8 @@ public class AdminController {
     
     // Show admin add products
     @GetMapping("/admin/products/add")
-    public String productsAddGet(Model model){
-        model.addAttribute("productDTO", new ProductDto());
+    public String productAddGet(Model model){
+        model.addAttribute("productDto", new ProductDto());
         model.addAttribute("categories",categoryService.getAllCategories());
         return "productsAdd";
     }

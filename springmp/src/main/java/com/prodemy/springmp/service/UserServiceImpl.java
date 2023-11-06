@@ -2,6 +2,7 @@ package com.prodemy.springmp.service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAllUsers() {
-        List<User> users = userRepository.findAll();
+    	List<User> users = userRepository.findAll();
         return users.stream()
                 .map((user) -> mapToUserDto(user))
                 .collect(Collectors.toList());
@@ -103,5 +104,16 @@ public class UserServiceImpl implements UserService {
         }
         
     }
+
+	@Override
+	public Optional<User> getUserById(Long id) {
+		return userRepository.findById(id);
+	}
+
+	@Override
+	public void deleteUserById(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

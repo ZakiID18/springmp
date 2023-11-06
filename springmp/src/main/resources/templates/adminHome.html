@@ -28,6 +28,12 @@
                     <a class="nav-link" th:href="@{/admin}" href="#">admin-home</a>
                 </li>
                 <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/shop}" href="#">shop</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/cart}" href="#">cart</a>
+                </li>
+                <li class="nav-item active">
                     <a class="nav-link" th:href="@{/logout}" href="#">logout</a>
                 </li>
 
@@ -62,7 +68,16 @@
                 </div>
             </div>
         </div>
+		 <div class="col-sm-3 pt-3" >
+            <div class="card" style="background-color:white;">
+                <div class="card-body">
+                    <h4 class="card-title">Users</h4>
+                    <p class="card-text">Manage the users section here.</p>
+                    <a href="#" th:href="@{/admin/users}" class="card-link btn btn-primary">Manage</a>
 
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
