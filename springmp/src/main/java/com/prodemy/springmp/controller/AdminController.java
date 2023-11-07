@@ -22,9 +22,9 @@ import com.prodemy.springmp.dto.ProductDto;
 import com.prodemy.springmp.model.Category;
 import com.prodemy.springmp.model.Product;
 import com.prodemy.springmp.model.User;
-import com.prodemy.springmp.service.CategoryServiceImpl;
-import com.prodemy.springmp.service.ProductServiceImpl;
-import com.prodemy.springmp.service.UserServiceImpl;
+import com.prodemy.springmp.service.CategoryService;
+import com.prodemy.springmp.service.ProductService;
+import com.prodemy.springmp.service.UserService;
 
 @Controller
 public class AdminController {
@@ -32,11 +32,11 @@ public class AdminController {
     public static String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/productImages";
     
     @Autowired
-    UserServiceImpl userService;
+    UserService userService;
     @Autowired
-    CategoryServiceImpl categoryService;
+    CategoryService categoryService;
     @Autowired
-    ProductServiceImpl productService;
+    ProductService productService;
     
     // Show admin home
     @GetMapping("/admin")
@@ -68,23 +68,24 @@ public class AdminController {
     
     // Remove users
     @GetMapping("/admin/users/delete/{id}")
-    public String deleteUser(@PathVariable Long id){
+    public String deleteUser(@PathVariable(value="id") Long id){
         userService.deleteUserById(id);
         return "/redirect:/admin/users";
     }
     
     @GetMapping("/admin/users/update/{id}")
-    public String updateUser(@PathVariable Long id, Model model){
-//        User user = userService.getUserById(id);
-//        model.addAttribute("user", user);
-//        return "usersUpdate";
-        Optional<User> user = userService.getUserById(id);
-        if(user.isPresent()) {
-            model.addAttribute("user", user.get());
-            return "usersUpdate";
-        } else {
-            return "404";
-        }
+    public String updateUser(@PathVariable(value="id") Long id, Model model){
+        UserDto userDto = userService.getUserById(id);
+        model.addAttribute("userDto", userDto);
+        return "usersAdd";
+//        Optional<User> user = userService.getUserById(id);
+//        if(user.isPresent()) {
+//            model.addAttribute("user", user.get());
+//            return "usersUpdate";
+//        } else {
+//            return "404";
+//        }
+        
     }
     
     // Show admin categories
